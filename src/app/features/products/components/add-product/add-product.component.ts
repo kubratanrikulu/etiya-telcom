@@ -12,7 +12,8 @@ import { ProductService } from '../../services/product.service';
 export class AddProductComponent implements OnInit {
 
   productForm!: FormGroup;
-  product!: Product;
+  productToUpdate!: Product;
+  
 
   constructor(
     private formBuilder:FormBuilder,
@@ -29,12 +30,12 @@ export class AddProductComponent implements OnInit {
 
   createProductForm():void{
     this.productForm = this.formBuilder.group({
-      name: [this.product?.name || '',Validators.required]
+      name: [this.productToUpdate?.name || '',Validators.required]
     })
   }
 
   save(){
-    if(this.product) this.update();
+    if(this.productToUpdate) this.update();
     else{
       this.add();
     }
@@ -51,7 +52,7 @@ export class AddProductComponent implements OnInit {
 
   getProductById(id:number){
     this.productService.getById(id).subscribe((data)=> {
-      this.product = data;
+      this.productToUpdate = data;
       this.createProductForm();
     })
   }
@@ -63,10 +64,10 @@ export class AddProductComponent implements OnInit {
       
       return
     }
-    const product:Product = Object.assign({id:this.product.id}, this.productForm.value);
+    const product:Product = Object.assign({id:this.productToUpdate.id}, this.productForm.value);
       this.productService.update(product).subscribe(()=>{
         setTimeout(()=>{
-          this.router.navigateByUrl("products");
+          this.router.navigateByUrl("home");
         },1000)
       })
   }
@@ -83,7 +84,7 @@ export class AddProductComponent implements OnInit {
     this.productService.add(product).subscribe(()=>{
       setTimeout(()=> {
         
-        this.router.navigateByUrl("products");
+        this.router.navigateByUrl("home");
       },1000);
     })
   }
